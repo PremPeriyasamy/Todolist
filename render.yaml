@@ -6,6 +6,4 @@ services:
     startCommand: "node server.js"
     envVars:
       - key: MONGO_URI
-        sync: false
-      - key: PORT
-        value: 10000
+        value: "mongodb+srv://premperiyasamy:prem123@mernprem.eokqdx6.mongodb.net/todosdb?retryWrites=true&w=majority"

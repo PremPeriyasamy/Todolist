@@ -8,12 +8,13 @@ const app = express();
 app.use(express.json());
 require("dotenv").config();
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("DB Connected!"))
-  .catch((err) => console.log(err));
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log("DB Connected!"))
+.catch(err => console.error("DB connection error:", err));
 
-  
 // Creating post method to create new todoitem
 app.post("/todos", async (req, res) => {
   const { title, description } = req.body;
@@ -77,8 +78,5 @@ app.delete("/todos/:id", async (req, res) => {
 });
 
 // Starting server program
-const port = 8000;
-
-app.listen(port, () => {
-  console.log("Server listning to port: " + port);
-});
+const port = process.env.PORT || 8000;
+app.listen(port, () => console.log("Server listening on port", port));
