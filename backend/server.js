@@ -2,22 +2,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const TODOS = require("./scemas/todo");
-require("dotenv").config();
 
 // Cresting instance of express
 const app = express();
 app.use(express.json());
-const url =
-  "mongodb+srv://premperiyasamy:prem123@mernprem.eokqdx6.mongodb.net/";
-mongoose
-  .connect(url)
-  .then(() => {
-    console.log("DB Connected!");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+require("dotenv").config();
 
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("DB Connected!"))
+  .catch((err) => console.log(err));
+
+  
 // Creating post method to create new todoitem
 app.post("/todos", async (req, res) => {
   const { title, description } = req.body;
