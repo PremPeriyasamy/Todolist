@@ -1,19 +1,20 @@
 //Using Express
 const express = require("express");
 const mongoose = require("mongoose");
-const TODOS = require("./scemas/todo");
+const TODOS = require("./schemas/todo");
 
 // Cresting instance of express
 const app = express();
 app.use(express.json());
 require("dotenv").config();
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log("DB Connected!"))
-.catch(err => console.error("DB connection error:", err));
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("DB Connected!"))
+  .catch((err) => console.error("DB connection error:", err));
 
 // Creating post method to create new todoitem
 app.post("/todos", async (req, res) => {
@@ -30,7 +31,7 @@ app.post("/todos", async (req, res) => {
     await newtodo.save();
     res.status(201).json(newtodo);
   } catch (error) {
-    res.status(500).json({ message: message.error });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -40,7 +41,7 @@ app.get("/todos", async (req, res) => {
     const alltodos = await TODOS.find();
     res.json(alltodos);
   } catch (error) {
-    res.status(500).json({ message: message.error });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -59,9 +60,13 @@ app.put("/todos/:id", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedTodo);
+    if (!updatedTodo) {
+      return res.status(404).json({ message: "Todo not found" });
+    } else {
+      res.json(updatedTodo);
+    }
   } catch (error) {
-    res.json({ message: message.error });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -71,9 +76,12 @@ app.delete("/todos/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const deleteTodo = await TODOS.findByIdAndDelete(id);
+    if (!deleteTodo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
     res.json({ message: "Task Deleted Successfully" });
   } catch (error) {
-    res.json({ message: message.error });
+    res.status(500).json({ message: error.message });
   }
 });
 
