@@ -2,13 +2,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const TODOS = require("./scemas/todo");
+require('dotenv').config();
 
 // Cresting instance of express
 const app = express();
 app.use(express.json());
-
+const url =
+  "mongodb+srv://premperiyasamy:<prem123>@mernprem.eokqdx6.mongodb.net/";
 mongoose
-  .connect("mongodb://localhost:27017/mern-app")
+  .connect(url)
   .then(() => {
     console.log("DB Connected!");
   })
